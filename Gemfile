@@ -25,6 +25,7 @@ gem 'bcrypt'
 gem 'devise'
 gem 'font-awesome-sass'
 gem 'httparty'
+gem 'slim'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
 gem 'rubocop', require: false
