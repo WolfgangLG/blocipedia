@@ -1,0 +1,26 @@
+// Place all the styles related to the welcome controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+$hero-height: 30rem;
+
+.hero-section {
+  background-color: $light-gray;
+  background-size: cover;
+  height: $hero-height;
+  min-height:300px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: none;
+  margin-bottom: 20px;
+  margin-top: -2rem;
+
+  .hero-section-text {
+    color: $dark-gray;
+    border: 1px solid $dark-gray;
+    padding: 2rem 3rem;
+    background: rgba(255,255,255,1);
+  }
+}
