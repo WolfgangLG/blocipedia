@@ -11,5 +11,13 @@ html lang="en"
     = csrf_meta_tag
 
   body
+    header
+      = render 'layouts/nav'
 
-    == yield
+    main role="main"
+      == yield
+
+    = render 'layouts/footer'
+
+    javascript:
+      $(document).foundation();
