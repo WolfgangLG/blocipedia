@@ -1,0 +1,23 @@
+doctype html
+html lang="en"
+  head
+    meta charset="utf-8"
+    meta name="viewport" content="width=device-width, initial-scale=1.0"
+
+    title == content_for?(:title) ? yield(:title) : "Blocipedia"
+
+    = stylesheet_link_tag "application"
+    = javascript_include_tag "application", "data-turbolinks-track" => true
+    = csrf_meta_tag
+
+  body
+    header
+      = render 'layouts/nav'
+
+    main role="main"
+      == yield
+
+    = render 'layouts/footer'
+
+    javascript:
+      $(document).foundation();
