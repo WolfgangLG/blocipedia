@@ -17,3 +17,40 @@
  *= require foundation_and_overrides
 
  */
+
+main {
+  min-height: calc(100vh - 70px);
+}
+
+.blocipedia-nav {
+  position: relative;
+  //margin-bottom: 2rem;
+}
+
+.blocipedia-nav, .blocipedia-footer {
+  background: $dark-gray;
+  max-width:none;
+  a, p {
+    color: $white;
+  }
+  ul {
+    background-color: transparent;
+  }
+}
+
+.blocipedia-footer {
+  height: 50px;
+  min-height: 4rem;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer-text {
+  margin-top: 15px;
+}
+
+.user-info-card {
+  padding: 5px;
+  border: 1px solid #e5e5e5;
+  margin-bottom: 2rem;
+}
