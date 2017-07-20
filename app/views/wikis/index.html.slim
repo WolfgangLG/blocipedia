@@ -1,0 +1,27 @@
+h1 Listing wikis
+
+table
+  thead
+    tr
+      th Title
+      th Body
+      th Private
+      th User
+      th
+      th
+      th
+
+  tbody
+    - @wikis.each do |wiki|
+      tr
+        td = wiki.title
+        td = wiki.body
+        td = wiki.private
+        td = wiki.user
+        td = link_to 'Show', wiki
+        td = link_to 'Edit', edit_wiki_path(wiki)
+        td = link_to 'Destroy', wiki, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Wiki', new_wiki_path
