@@ -1,10 +1,11 @@
 class WikisController < ApplicationController
   before_action :set_wiki, only: [:show, :edit, :update, :destroy]
+  before_action :validate_ownership, only: [:show, :edit, :update, :destroy]
 
   # GET /wikis
   # GET /wikis.json
   def index
-    @wikis = Wiki.all
+    @wikis = Wiki.visible_to(current_user)
   end
 
   # GET /wikis/1
@@ -14,7 +15,7 @@ class WikisController < ApplicationController
 
   # GET /wikis/new
   def new
-    @wiki = Wiki.new
+    @wiki = current_user.wikis.new
   end
 
   # GET /wikis/1/edit
@@ -24,7 +25,8 @@ class WikisController < ApplicationController
   # POST /wikis
   # POST /wikis.json
   def create
-    @wiki = Wiki.new(wiki_params)
+    @wiki = current_user.wikis.new(wiki_params)
+    @wiki.user_id = current_user.id
 
     respond_to do |format|
       if @wiki.save
@@ -70,5 +72,12 @@ class WikisController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def wiki_params
       params.require(:wiki).permit(:title, :body, :private, :user_id)
+    end
+
+    def validate_ownership
+      unless !@wiki.private || @wiki.user_id == current_user.id
+        flash[:alert] = "You must be signed in to view private topics."
+        redirect_to new_user_session_path
+      end
     end
 end

@@ -17,4 +17,8 @@
 
 class Wiki < ActiveRecord::Base
   belongs_to :user
+
+  scope :public_wikis, -> { where(private: false) }
+  scope :visible_to, -> (user) { user ? public_wikis.where(user_id: user.id) : public_wikis}
+
 end
