@@ -9,105 +9,280 @@ RSpec.describe WikisController, type: :controller do
       user_id: user.id
   } }
 
-  context "guest user" do
-    describe "GET #index" do
-      it "redirects unauthenticated users" do
+  describe "GET #index" do
+    context "when user is logged out" do
+      it "returns a 302 http status" do
+        get :index
+        expect(response).to have_http_status(302)
+      end
+
+      it "redirects the user" do
         wiki = Wiki.create! valid_attributes
         get :index
         expect(response).to redirect_to(new_user_session_path)
       end
     end
+
+    context "when user is logged in" do
+      before(:each) do
+        sign_in user
+      end
+
+      it "returns http success" do
+        wiki = Wiki.create! valid_attributes
+        get :index
+        expect(response).to have_http_status(200)
+      end
+
+      it "renders the index view" do
+        wiki = Wiki.create! valid_attributes
+        get :index
+        expect(response).to render_template :index
+      end
+
+      it "assigns all wikis as @wikis" do
+        wiki = Wiki.create! valid_attributes
+        get :index
+        expect(assigns(:wikis)).to include(wiki)
+      end
+    end
   end
 
-  context "authenticated user" do
+  describe "GET #show" do
+    context "when user is logged out" do
+      it "returns a 302 http status" do
+        wiki = Wiki.create! valid_attributes
+        get :show, id: wiki.id
+        expect(response).to have_http_status(302)
+      end
 
-  # describe "GET #show" do
-  #   it "returns a success response" do
-  #     wiki = Wiki.create! valid_attributes
-  #     get :show, {:id => wiki.to_param}, valid_session
-  #     expect(response).to be_success
-  #   end
-  # end
-  #
-  # describe "GET #new" do
-  #   it "returns a success response" do
-  #     get :new, {}, valid_session
-  #     expect(response).to be_success
-  #   end
-  # end
-  #
-  # describe "GET #edit" do
-  #   it "returns a success response" do
-  #     wiki = Wiki.create! valid_attributes
-  #     get :edit, {:id => wiki.to_param}, valid_session
-  #     expect(response).to be_success
-  #   end
-  # end
-  #
-  # describe "POST #create" do
-  #   context "with valid params" do
-  #     it "creates a new Wiki" do
-  #       expect {
-  #         post :create, {:wiki => valid_attributes}, valid_session
-  #       }.to change(Wiki, :count).by(1)
-  #     end
-  #
-  #     it "redirects to the created wiki" do
-  #       post :create, {:wiki => valid_attributes}, valid_session
-  #       expect(response).to redirect_to(Wiki.last)
-  #     end
-  #   end
-  #
-  #   context "with invalid params" do
-  #     it "returns a success response (i.e. to display the 'new' template)" do
-  #       post :create, {:wiki => invalid_attributes}, valid_session
-  #       expect(response).to be_success
-  #     end
-  #   end
-  # end
-  #
-  # describe "PUT #update" do
-  #   context "with valid params" do
-  #     let(:new_attributes) {
-  #       skip("Add a hash of attributes valid for your model")
-  #     }
-  #
-  #     it "updates the requested wiki" do
-  #       wiki = Wiki.create! valid_attributes
-  #       put :update, {:id => wiki.to_param, :wiki => new_attributes}, valid_session
-  #       wiki.reload
-  #       skip("Add assertions for updated state")
-  #     end
-  #
-  #     it "redirects to the wiki" do
-  #       wiki = Wiki.create! valid_attributes
-  #       put :update, {:id => wiki.to_param, :wiki => valid_attributes}, valid_session
-  #       expect(response).to redirect_to(wiki)
-  #     end
-  #   end
-  #
-  #   context "with invalid params" do
-  #     it "returns a success response (i.e. to display the 'edit' template)" do
-  #       wiki = Wiki.create! valid_attributes
-  #       put :update, {:id => wiki.to_param, :wiki => invalid_attributes}, valid_session
-  #       expect(response).to be_success
-  #     end
-  #   end
-  # end
-  #
-  # describe "DELETE #destroy" do
-  #   it "destroys the requested wiki" do
-  #     wiki = Wiki.create! valid_attributes
-  #     expect {
-  #       delete :destroy, {:id => wiki.to_param}, valid_session
-  #     }.to change(Wiki, :count).by(-1)
-  #   end
-  #
-  #   it "redirects to the wikis list" do
-  #     wiki = Wiki.create! valid_attributes
-  #     delete :destroy, {:id => wiki.to_param}, valid_session
-  #     expect(response).to redirect_to(wikis_url)
-  #   end
-  # end
+      it "redirects unauthorized users" do
+        wiki = Wiki.create! valid_attributes
+        get :show, id: wiki.id
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context "when user is logged in" do
+      before(:each) do
+        sign_in user
+      end
+
+      it "returns http success" do
+        wiki = Wiki.create! valid_attributes
+        get :show, id: wiki.id
+        expect(response).to have_http_status(200)
+      end
+
+      it "renders the show view" do
+        wiki = Wiki.create! valid_attributes
+        get :show, id: wiki.id
+        expect(response).to render_template :show
+      end
+
+      it "assigns wiki to @wiki" do
+        wiki = Wiki.create! valid_attributes
+        get :show, id: wiki.id
+        expect(assigns(:wiki)).to eq(wiki)
+      end
+    end
+  end
+
+  describe "GET #new" do
+    context "when user is logged out" do
+      it "returns a 302 http status" do
+        get :new
+        expect(response).to have_http_status(302)
+      end
+
+      it "redirects unauthorized users" do
+        get :new
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context "when user is logged in" do
+      before(:each) do
+        sign_in user
+      end
+
+      it "returns http success" do
+        get :new
+        expect(response).to have_http_status(200)
+      end
+
+      it "renders the new views" do
+        get :new
+        expect(response).to render_template :new
+      end
+    end
+  end
+
+  describe "POST #create" do
+    context "when user is logged out" do
+      it "returns a 302 http status" do
+        post :create, wiki: valid_attributes
+        expect(response).to have_http_status(302)
+      end
+
+      it "redirects unauthorized users" do
+        post :create, wiki: valid_attributes
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context "when user is logged in" do
+      before(:each) do
+        sign_in user
+      end
+
+      it "creates a new wiki" do
+        expect {
+          post :create, wiki: valid_attributes
+        }.to change(Wiki, :count).by(+1)
+      end
+
+      it "assigns a newly created wiki as @wiki" do
+        post :create, wiki: valid_attributes
+        expect(assigns(:wiki)).to be_a(Wiki)
+        expect(assigns(:wiki)).to be_persisted
+      end
+
+      it "redirects to the wiki" do
+        post :create, wiki: valid_attributes
+        expect(response).to redirect_to(Wiki.last)
+      end
+    end
+  end
+
+  describe "GET #edit" do
+    context "when user is logged out" do
+      it "returns a 302 http status" do
+        wiki = Wiki.create! valid_attributes
+        get :edit, id: wiki.id
+        expect(response).to have_http_status(302)
+      end
+
+      it "redirects unauthorized users" do
+        wiki = Wiki.create! valid_attributes
+        get :edit, id: wiki.id
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context "when user is logged in" do
+      before(:each) do
+        sign_in user
+      end
+
+      it "returns http success" do
+        wiki = Wiki.create! valid_attributes
+        get :edit, id: wiki.id
+        expect(response).to have_http_status(200)
+      end
+
+      it "renders the edit view" do
+        wiki = Wiki.create! valid_attributes
+        get :edit, id: wiki.id
+        expect(response).to render_template :edit
+      end
+
+      it "assigns the requested wiki as @wiki" do
+        wiki = Wiki.create! valid_attributes
+        get :edit, id: wiki.id
+        expect(assigns(:wiki)).to eq(wiki)
+      end
+
+      it "assigns wiki to be updated to @wiki" do
+        wiki = Wiki.create! valid_attributes
+        get :edit, id: wiki.id
+        wiki_instance = assigns(:wiki)
+
+        expect(wiki_instance.id).to eq wiki.id
+        expect(wiki_instance.title).to eq wiki.title
+        expect(wiki_instance.user_id).to eq wiki.user_id
+      end
+    end
+  end
+
+  describe "PUT #update" do
+    context "when user is logged out" do
+      it "returns a 302 http status" do
+        wiki = Wiki.create! valid_attributes
+        put :update, id: wiki.id, wiki: { title: "New Example Wiki Title", private: true }
+        expect(response).to have_http_status(302)
+      end
+
+      it "redirects unauthorized users" do
+        wiki = Wiki.create! valid_attributes
+        put :update, id: wiki.id, wiki: { title: "New Example Wiki Title", private: true }
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context "when user is logged in" do
+      before(:each) do
+        sign_in user
+      end
+
+      it "assigns the wiki as @wiki" do
+        wiki = Wiki.create! valid_attributes
+        put :update, id: wiki.id, wiki: { title: "New Example Wiki Title", private: true }
+        expect(assigns(:wiki)).to eq(wiki)
+      end
+
+      it "updates the requested wiki" do
+        wiki = Wiki.create! valid_attributes
+        put :update, id: wiki.id, wiki: { title: "New Example Wiki Title", private: true }
+        wiki.reload
+
+        updated_wiki = assigns(:wiki)
+        expect(updated_wiki.id).to eq wiki.id
+        expect(updated_wiki.title).to eq wiki.title
+        expect(updated_wiki.private).to eq wiki.private
+        expect(updated_wiki.user_id).to eq wiki.user_id
+      end
+
+      it "redirects to the wiki" do
+        wiki = Wiki.create! valid_attributes
+        put :update, id: wiki.id, wiki: { title: "New Example Wiki Title", private: true }
+        expect(response).to redirect_to(wiki)
+      end
+    end
+  end
+
+  describe "DELETE #destroy" do
+    context "when user is logged out" do
+      it "returns a 302 http status" do
+        wiki = Wiki.create! valid_attributes
+        delete :destroy, id: wiki.id
+        expect(response).to have_http_status(302)
+      end
+
+      it "redirects the user" do
+        wiki = Wiki.create! valid_attributes
+        delete :destroy, id: wiki.id
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context "when user is logged in" do
+      before(:each) do
+        sign_in user
+      end
+
+      it "destroys the requested wiki" do
+        wiki = Wiki.create! valid_attributes
+        delete :destroy, id: wiki.id
+        count = Wiki.where({id: wiki.id}).size
+        expect(count).to eq(0)
+      end
+
+      it "redirects to the wiki list" do
+        wiki = Wiki.create! valid_attributes
+        delete :destroy, id: wiki.id
+        expect(response).to redirect_to(wikis_url)
+      end
+    end
   end
 end
