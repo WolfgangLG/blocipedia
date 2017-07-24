@@ -30,6 +30,7 @@ gem 'slim-rails'
 gem 'jbuilder', '~> 2.0'
 gem 'rubocop', require: false
 gem 'annotate'
+gem 'pundit'
 
 group :development, :test do
   gem 'byebug'

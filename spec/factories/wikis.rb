@@ -5,7 +5,7 @@
 #  id         :integer          not null, primary key
 #  title      :string           default(""), not null
 #  body       :text             default("")
-#  private    :boolean          default(TRUE), not null
+#  private    :boolean          default(FALSE), not null
 #  user_id    :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
