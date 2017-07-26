@@ -31,6 +31,7 @@ gem 'jbuilder', '~> 2.0'
 gem 'rubocop', require: false
 gem 'annotate'
 gem 'pundit'
+gem 'stripe'
 
 group :development, :test do
   gem 'byebug'
