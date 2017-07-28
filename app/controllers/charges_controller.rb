@@ -1,21 +1,22 @@
 class ChargesController < ApplicationController
+  before_action :amount_to_be_charged
+
   def new
     @stripe_btn_data = {
         key: "#{ Rails.configuration.stripe[:publishable_key] }",
         description: "BlocipediaMembership - #{current_user.username}",
-        amount: 19_99
+        amount: @amount
     }
   end
 
   def create
-    @amount = 19_99
 
-    customer = Stripe::Customer.create(
+    customer = StripeService.new(
       email: current_user.email,
       source: params[:stripeToken]
-    )
+    ).create_customer
 
-    charge = Stripe::Charge.create(
+    charge = StripeService.new(
       customer: customer.id,
       amount: @amount,
       description: "BlocipediaMembership - #{current_user.email}",
@@ -23,10 +24,16 @@ class ChargesController < ApplicationController
     )
 
     flash[:notice] = "Thank you for you payment, #{current_user.username}! You can downgrade your account at any time."
-    redirect_to user_path(current_user)
+    redirect_to edit_user_registration_path
 
   rescue Stripe::CardError => e
     flash[:alert] = e.message
     redirect_to new_charge_path
+  end
+
+  private
+
+  def amount_to_be_charged
+    @amount = 19_99
   end
 end
