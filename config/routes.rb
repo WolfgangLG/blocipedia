@@ -5,6 +5,8 @@ Rails.application.routes.draw do
     }
 
   resources :charges, only: [:new, :create]
+  get 'receipt', to: 'charges#receipt', as: 'receipt'
+
   resources :wikis
   root 'welcome#index'
 
