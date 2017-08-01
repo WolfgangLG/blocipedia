@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       sessions: 'users/sessions',
       passwords: 'users/passwords'
     }
+  post 'downgrade', to: 'users#downgrade', as: 'downgrade'
 
   resources :charges, only: [:new, :create]
   get 'receipt', to: 'charges#receipt', as: 'receipt'

@@ -1,6 +1,8 @@
+- username = current_user.first_name.present? ? current_user.first_name : current_user.username
+
 .row
   .small-8.small-offset-2.columns
-    h2 Edit #{resource_name.to_s.humanize}
+    h2 Hello, #{username}!
 
 = form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f|
   .row
@@ -14,12 +16,14 @@
         = f.email_field :email, autofocus: true
 
       .field
-        = f.label :first_name
-        = f.text_field :first_name
+        .row
+          .small-6.columns
+            = f.label :first_name
+            = f.text_field :first_name
 
-      .field
-        = f.label :last_name
-        = f.text_field :last_name
+          .small-6.columns
+            = f.label :last_name
+            = f.text_field :last_name
 
       - if devise_mapping.confirmable? && resource.pending_reconfirmation?
         div "Currently waiting confirmation for: #{resource.unconfirmed_email}"
@@ -41,14 +45,24 @@
         = f.password_field :current_password, autocomplete: "off"
 
       .actions
-        = f.submit "Update"
+        = f.submit "Update", class: 'info button expanded'
 
 .row
   .small-8.small-offset-2.columns
-    h3 Cancel my account
+    h4 Your Blocipedia Status: #{current_user.role.humanize}
 
-    p Unhappy?
+    - if current_user.standard? || current_user.admin?
+      = button_to "Upgrade my account", new_charge_path, method: :get, class: 'success button expanded'
+    - if current_user.premium? || current_user.admin?
+      = button_to "Downgrade my account", downgrade_path, data: { confirm: "Are you sure?" }, method: :post, class: 'warning button expanded'
 
-    = button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete
+    hr
 
-    = link_to "Back", :back
+.row
+  .small-8.small-offset-2.columns
+    h4 Cancel Blocipedia Account
+
+    = button_to "Cancel my account", registration_path(resource_name),
+            data: { confirm: "Are you sure?" },
+            method: :delete,
+            class: 'alert button tiny'
