@@ -12,7 +12,8 @@
   .field
     = f.label :body
     = f.text_area :body
-  .field
-    = f.label :private
-    = f.check_box :private
+  - if current_user.admin? || current_user.premium?
+    .field
+      = f.label :private
+      = f.check_box :private
   .actions = f.submit
