@@ -12,7 +12,7 @@
   .field
     = f.label :body
     = f.text_area :body
-  - if current_user.admin? || current_user.premium?
+  - if private_wiki_permitted?
     .field
       = f.label :private
       = f.check_box :private
