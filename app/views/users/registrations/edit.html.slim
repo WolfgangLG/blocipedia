@@ -1,0 +1,68 @@
+- username = current_user.first_name.present? ? current_user.first_name : current_user.username
+
+.row
+  .small-8.small-offset-2.columns
+    h2 Hello, #{username}!
+
+= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f|
+  .row
+    .small-8.small-offset-2.columns
+      = devise_error_messages!
+
+  .row
+    .small-8.small-offset-2.columns
+      .field
+        = f.label :email
+        = f.email_field :email, autofocus: true
+
+      .field
+        .row
+          .small-6.columns
+            = f.label :first_name
+            = f.text_field :first_name
+
+          .small-6.columns
+            = f.label :last_name
+            = f.text_field :last_name
+
+      - if devise_mapping.confirmable? && resource.pending_reconfirmation?
+        div "Currently waiting confirmation for: #{resource.unconfirmed_email}"
+
+      .field
+        = f.label :password
+        - if @minimum_password_length
+          small = "#{@minimum_password_length} characters minimum"
+        small = " <i>(leave blank if you don't want to change it)</i>".html_safe
+        = f.password_field :password, autocomplete: "off"
+
+      .field
+        = f.label :password_confirmation
+        = f.password_field :password_confirmation, autocomplete: "off"
+
+      .field
+        = f.label :current_password
+        small = "<i>(we need your current password to confirm your changes)</i>".html_safe
+        = f.password_field :current_password, autocomplete: "off"
+
+      .actions
+        = f.submit "Update", class: 'info button expanded'
+
+.row
+  .small-8.small-offset-2.columns
+    h4 Your Blocipedia Status: #{current_user.role.humanize}
+
+    - if current_user.standard? || current_user.admin?
+      = button_to "Upgrade my account", new_charge_path, method: :get, class: 'success button expanded'
+    - if current_user.premium? || current_user.admin?
+      = button_to "Downgrade my account", downgrade_path, data: { confirm: "Are you sure?" }, method: :post, class: 'warning button expanded'
+
+    hr
+
+.row
+  .small-8.small-offset-2.columns
+    h4 Cancel Blocipedia Account
+
+    = button_to "Cancel my account", registration_path(resource_name),
+            data: { confirm: "Are you sure?" },
+            method: :delete,
+            class: 'alert button tiny'
