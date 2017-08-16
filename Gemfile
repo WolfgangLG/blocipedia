@@ -32,6 +32,7 @@ gem 'rubocop', require: false
 gem 'annotate'
 gem 'pundit'
 gem 'stripe'
+gem 'redcarpet'
 
 group :development, :test do
   gem 'byebug'
