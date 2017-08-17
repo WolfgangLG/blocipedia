@@ -14,8 +14,8 @@ table
   tbody
     - @wikis.each do |wiki|
       tr
-        td = wiki.title
-        td = wiki.body
+        td = markdown(wiki.title)
+        td = markdown(wiki.body)
         td = wiki.private
         td = wiki.user.username
         td = link_to 'Show', wiki

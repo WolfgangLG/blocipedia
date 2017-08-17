@@ -2,10 +2,10 @@ p#notice = notice
 
 p
   strong Title:
-  = @wiki.title
+  = markdown(@wiki.title)
 p
   strong Body:
-  = @wiki.body
+  = markdown(@wiki.body)
 p
   strong Private:
   = @wiki.private
